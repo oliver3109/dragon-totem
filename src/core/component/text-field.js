@@ -1,6 +1,8 @@
-/**
- * @file Componet类
- * @deprecated HTML元素对象
+/*
+ * @Description: 文本输入框组件
+ * @Auth: Oliver <81092048@qq.com>
+ * @Date: 2020-08-21 22:50:22
+ * @FilePath: /graffiti.js/src/core/component/text-field.js
  */
 
 import {
@@ -9,7 +11,7 @@ import {
   TEXT_FIELD_DELETE,
 } from '../constant/event'
 
-export default class Component {
+export default class TextField {
   /**
    * 组件构造函数
    * @param {*} graffiti 主对象
@@ -18,7 +20,6 @@ export default class Component {
    */
   constructor(graffiti, tag, config) {
     const container = graffiti.container
-    console.log('初始化 Component 对象....')
     this.graffiti = graffiti
     this.container = container
     this.document = document.createElement(tag)
@@ -158,7 +159,6 @@ export default class Component {
    * div 拖动事件
    */
   onMove() {
-    console.log(this.container.offsetWidth)
     let sent = {
       l: 0, //设置div在父元素的活动范围，10相当于给父div设置padding-left：10;
       r: this.container.offsetWidth - this.document.offsetWidth, // offsetWidth:当前对象的宽度， offsetWidth = width+padding+border

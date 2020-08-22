@@ -1,4 +1,4 @@
-import Component from './lib/componet'
+import TextField from './component/text-field'
 
 /**
  * Graffiti
@@ -72,7 +72,7 @@ class Graffiti {
       data = {},
     } = config
     // 初始化li组件
-    let liComponet = new Component(this, 'li', {
+    let liComponet = new TextField(this, 'li', {
       text,
       x,
       y,
