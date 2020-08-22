@@ -39,7 +39,7 @@ const plugins = [
     minimize: true,
     extensions: ['css', 'scss'],
     process: processSass,
-    extract: `dist/${packageName}.css`,
+    extract: `${packageName}.css`,
   }),
   babel({
     exclude: 'node_modules/**',
