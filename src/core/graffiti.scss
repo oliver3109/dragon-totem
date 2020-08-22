@@ -16,6 +16,7 @@ body * {
   display: inline-block;
   // 菜单
   &__menu {
+    z-index: 999;
     position: absolute;
     display: none;
     width: 100px;
@@ -25,12 +26,13 @@ body * {
     li {
       list-style: none;
       width: 100%;
+      background-color: #eee;
       a {
         display: inline-block;
         text-decoration: none;
         color: #555;
         width: 100%;
-        padding: 10px 0;
+        padding: 5px 0;
         text-align: center;
         &:hover,
         &:active {

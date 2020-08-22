@@ -1,10 +1,5 @@
 import Component from './lib/componet'
 
-const MENU_HTML = `
-<ul class="graffiti__menu" id="graffiti__menu">
-  <li><a href="###">删除</a></li>
-</ul>`
-
 /**
  * Graffiti
  * @param {*} id 容器id
@@ -27,7 +22,17 @@ class Graffiti {
     let dom = document.getElementById(this.id)
     if (dom) {
       dom.className = 'graffiti'
-      dom.innerHTML = MENU_HTML
+      let ul = document.createElement('ul')
+      ul.id = 'graffiti__menu'
+      ul.className = 'graffiti__menu'
+      let li = document.createElement('li')
+      let a = document.createElement('a')
+      a.className = 'graffiti__menu__delete'
+      a.href = '###'
+      a.innerText = '删除'
+      li.appendChild(a)
+      ul.appendChild(li)
+      document.body.appendChild(ul)
       this.container = dom
     }
   }

@@ -7,3 +7,6 @@ export const TEXT_FIELD_FOUCS = 'textFieldFocus'
 
 // 容器点击事件
 export const CONTAINER_CLICK = 'containerClick'
+
+// 元素菜单点击删除事件
+export const TEXT_FIELD_DELETE = 'textFieldDelete'

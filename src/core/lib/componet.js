@@ -3,9 +3,19 @@
  * @deprecated HTML元素对象
  */
 
-import { TEXT_FIELD_FOUCS, CONTAINER_CLICK } from '../constant/event'
+import {
+  TEXT_FIELD_FOUCS,
+  CONTAINER_CLICK,
+  TEXT_FIELD_DELETE,
+} from '../constant/event'
 
 export default class Component {
+  /**
+   * 组件构造函数
+   * @param {*} graffiti 主对象
+   * @param {*} tag html标签
+   * @param {*} config 元素配置
+   */
   constructor(graffiti, tag, config) {
     const container = graffiti.container
     console.log('初始化 Component 对象....')
@@ -14,16 +24,24 @@ export default class Component {
     this.document = document.createElement(tag)
     this.config = config
     this.init(config)
+
+    // 获取菜单对象
+    const graffitiMenu = document.getElementById('graffiti__menu')
+
     // 获取dom对象
-    let li = this.componentElement
+    let li = this.document
+    li.style.userSelect = 'none'
+
     let element = document.createElement('div')
     element.className = 'element'
     let span = document.createElement('span')
     span.innerText = config.text || '双击编辑文本'
     element.onclick = (e) => {
+      graffitiMenu.style.display = 'none'
       li.classList.remove('item-comp-hover')
       li.classList.add('item-comp-border')
-      graffiti.listener[TEXT_FIELD_FOUCS](this)
+      graffiti.listener[TEXT_FIELD_FOUCS] &&
+        graffiti.listener[TEXT_FIELD_FOUCS](this)
       e.stopImmediatePropagation()
     }
     element.ondblclick = (e) => {
@@ -38,11 +56,13 @@ export default class Component {
       }, 0)
       e.stopImmediatePropagation()
     }
+
     this.container.onclick = () => {
       this.render()
+      graffitiMenu.style.display = 'none'
       li.classList.add('item-comp-hover')
       li.classList.remove('item-comp-border')
-      graffiti.listener[CONTAINER_CLICK]()
+      graffiti.listener[CONTAINER_CLICK] && graffiti.listener[CONTAINER_CLICK]()
     }
     span.onblur = (e) => {
       this.render()
@@ -59,16 +79,7 @@ export default class Component {
     // 添加内部对象
     li.appendChild(elementBox)
 
-    // 自定义右键菜单
-    element.oncontextmenu = (event) => {
-      const menu = document.getElementById('graffiti__menu')
-      menu.style.display = 'block'
-      console.dir(this.container)
-      console.dir(menu)
-      menu.style.left = '20px'
-      menu.style.top = '10px'
-      return false
-    }
+    this.initContextMenuEvent(graffitiMenu, li)
   }
 
   // 获取组件真实dom对象
@@ -92,6 +103,55 @@ export default class Component {
     }
     this.document.style.left = `${x}px`
     this.document.style.top = `${y}px`
+  }
+
+  /**
+   * 初始化自定义菜单显示事件
+   */
+  initContextMenuEvent(graffitiMenu, element) {
+    // 获取菜单对象
+    // const graffitiMenu = document.getElementById('graffiti__menu')
+    // 自定义右键菜单
+    element.oncontextmenu = (event) => {
+      // 获取当前点击的坐标数据
+      const { x, y } = event
+      // 获取容器数据
+      const {
+        offsetTop,
+        offsetHeight,
+        offsetLeft,
+        offsetWidth,
+      } = this.container
+
+      // 显示菜单
+      graffitiMenu.style.display = 'block'
+      graffitiMenu.style.left = `${x}px`
+      // 判断菜单是否超出底部
+      if (offsetTop + offsetHeight < y + graffitiMenu.offsetHeight) {
+        graffitiMenu.style.top = `${y - graffitiMenu.offsetHeight - 10}px`
+      } else {
+        graffitiMenu.style.top = `${y}px`
+      }
+      // 判断菜单是否超出右侧
+      if (offsetLeft + offsetWidth < x + graffitiMenu.offsetWidth) {
+        graffitiMenu.style.left = `${x - graffitiMenu.offsetWidth - 10}px`
+      } else {
+        graffitiMenu.style.left = `${x}px`
+      }
+      return false
+    }
+
+    // 获取删除
+    const graffitiMenuDelete = graffitiMenu.querySelector(
+      '.graffiti__menu__delete'
+    )
+    graffitiMenuDelete.onclick = () => {
+      element.remove()
+      graffitiMenu.style.display = 'none'
+      this.graffiti.listener[TEXT_FIELD_DELETE] &&
+        this.graffiti.listener[TEXT_FIELD_DELETE](element)
+      this.destory()
+    }
   }
 
   /**
@@ -165,8 +225,10 @@ export default class Component {
    * 渲染组件在容器中显示
    */
   render() {
-    this.container.appendChild(this.document)
-    this.onMove()
+    if (this.container && this.document) {
+      this.container.appendChild(this.document)
+      this.onMove()
+    }
   }
 
   /**
@@ -185,5 +247,13 @@ export default class Component {
     for (const key in style) {
       this.document.style[key] = style[key]
     }
+  }
+
+  /**
+   * 销毁
+   */
+  destory() {
+    this.graffiti = null
+    this.document = null
   }
 }
