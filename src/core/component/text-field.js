@@ -19,68 +19,29 @@ export default class TextField {
    * @param {*} config 元素配置
    */
   constructor(graffiti, tag, config) {
-    const container = graffiti.container
+    // Graffiti 对象
     this.graffiti = graffiti
+
+    // 外层容器DOM对象
+    const container = graffiti.container
     this.container = container
+
+    // 当前组件DOM对象
     this.document = document.createElement(tag)
+
+    // 相关配置项
     this.config = config
+
+    // 当前组件的菜单对象
+    this.menu = this.initMenu()
+
     this.init(config)
 
-    // 获取菜单对象
-    const graffitiMenu = document.getElementById('graffiti__menu')
+    // 构建
+    this.buildComponent()
 
-    // 获取dom对象
-    let li = this.document
-    li.style.userSelect = 'none'
-
-    let element = document.createElement('div')
-    element.className = 'element'
-    let span = document.createElement('span')
-    span.innerText = config.text || '双击编辑文本'
-    element.onclick = (e) => {
-      graffitiMenu.style.display = 'none'
-      li.classList.remove('item-comp-hover')
-      li.classList.add('item-comp-border')
-      graffiti.listener[TEXT_FIELD_FOUCS] &&
-        graffiti.listener[TEXT_FIELD_FOUCS](this)
-      e.stopImmediatePropagation()
-    }
-    element.ondblclick = (e) => {
-      this.stop()
-      span.contentEditable = 'true'
-      setTimeout(() => {
-        let selection = window.getSelection()
-        let range = document.createRange()
-        range.selectNodeContents(span)
-        selection.removeAllRanges()
-        selection.addRange(range)
-      }, 0)
-      e.stopImmediatePropagation()
-    }
-
-    this.container.onclick = () => {
-      this.render()
-      graffitiMenu.style.display = 'none'
-      li.classList.add('item-comp-hover')
-      li.classList.remove('item-comp-border')
-      graffiti.listener[CONTAINER_CLICK] && graffiti.listener[CONTAINER_CLICK]()
-    }
-    span.onblur = (e) => {
-      this.render()
-      li.classList.add('item-comp-hover')
-      li.classList.remove('item-comp-border')
-      e.preventDefault()
-    }
-
-    element.appendChild(span)
-
-    let elementBox = document.createElement('div')
-    elementBox.className = 'element-box'
-    elementBox.appendChild(element)
-    // 添加内部对象
-    li.appendChild(elementBox)
-
-    this.initContextMenuEvent(graffitiMenu, li)
+    // 初始化右键菜单事件
+    this.initContextMenuEvent()
   }
 
   // 获取组件真实dom对象
@@ -104,16 +65,96 @@ export default class TextField {
     }
     this.document.style.left = `${x}px`
     this.document.style.top = `${y}px`
+    this.document.id = 'TEXT-FIELD-' + config.id
+  }
+
+  /**
+   * 初始化菜单
+   */
+  initMenu() {
+    // 添加菜单
+    let ul = document.createElement('ul')
+    ul.id = 'graffiti__menu'
+    ul.className = 'graffiti__menu'
+    let li = document.createElement('li')
+    let a = document.createElement('a')
+    a.className = 'graffiti__menu__delete'
+    a.href = '###'
+    a.innerText = '删除'
+    li.appendChild(a)
+    ul.appendChild(li)
+    document.body.appendChild(ul)
+    return ul
+  }
+
+  /**
+   * 构造组件
+   */
+  buildComponent() {
+    let li = this.document
+    li.style.userSelect = 'none'
+    let element = document.createElement('div')
+    element.className = 'element'
+    let span = document.createElement('span')
+    span.innerText = this.config.text || '双击编辑文本'
+    element.onclick = (e) => {
+      this.menu.style.display = 'none'
+      const lis = this.container.querySelectorAll(
+        'li.item.item-comp.item-comp-border'
+      )
+      lis.forEach((item) => {
+        item.classList.remove('item-comp-border')
+      })
+      li.classList.remove('item-comp-hover')
+      li.classList.add('item-comp-border')
+      this.graffiti.event.emit(TEXT_FIELD_FOUCS, this)
+      e.stopImmediatePropagation()
+    }
+    element.ondblclick = (e) => {
+      this.stop()
+      span.contentEditable = 'true'
+      setTimeout(() => {
+        let selection = window.getSelection()
+        let range = document.createRange()
+        range.selectNodeContents(span)
+        selection.removeAllRanges()
+        selection.addRange(range)
+      }, 0)
+      e.stopImmediatePropagation()
+    }
+
+    this.container.onclick = () => {
+      this.render()
+      this.menu.style.display = 'none'
+      const lis = this.container.querySelectorAll('li.item.item-comp')
+      lis.forEach((item) => {
+        item.classList.add('item-comp-hover')
+        item.classList.remove('item-comp-border')
+      })
+      this.graffiti.event.emit(TEXT_FIELD_FOUCS)
+    }
+    span.onblur = (e) => {
+      this.render()
+      li.classList.add('item-comp-hover')
+      li.classList.remove('item-comp-border')
+      e.preventDefault()
+    }
+
+    element.appendChild(span)
+
+    let elementBox = document.createElement('div')
+    elementBox.className = 'element-box'
+    elementBox.appendChild(element)
+    // 添加内部对象
+    li.appendChild(elementBox)
   }
 
   /**
    * 初始化自定义菜单显示事件
    */
-  initContextMenuEvent(graffitiMenu, element) {
-    // 获取菜单对象
-    // const graffitiMenu = document.getElementById('graffiti__menu')
+  initContextMenuEvent() {
     // 自定义右键菜单
-    element.oncontextmenu = (event) => {
+    this.document.oncontextmenu = (event) => {
       // 获取当前点击的坐标数据
       const { x, y } = event
       // 获取容器数据
@@ -125,33 +166,31 @@ export default class TextField {
       } = this.container
 
       // 显示菜单
-      graffitiMenu.style.display = 'block'
-      graffitiMenu.style.left = `${x}px`
+      this.menu.style.display = 'block'
+      this.menu.style.left = `${x}px`
       // 判断菜单是否超出底部
-      if (offsetTop + offsetHeight < y + graffitiMenu.offsetHeight) {
-        graffitiMenu.style.top = `${y - graffitiMenu.offsetHeight - 10}px`
+      if (offsetTop + offsetHeight < y + this.menu.offsetHeight) {
+        this.menu.style.top = `${y - this.menu.offsetHeight - 10}px`
       } else {
-        graffitiMenu.style.top = `${y}px`
+        this.menu.style.top = `${y}px`
       }
       // 判断菜单是否超出右侧
-      if (offsetLeft + offsetWidth < x + graffitiMenu.offsetWidth) {
-        graffitiMenu.style.left = `${x - graffitiMenu.offsetWidth - 10}px`
+      if (offsetLeft + offsetWidth < x + this.menu.offsetWidth) {
+        this.menu.style.left = `${x - this.menu.offsetWidth - 10}px`
       } else {
-        graffitiMenu.style.left = `${x}px`
+        this.menu.style.left = `${x}px`
       }
       return false
     }
 
     // 获取删除
-    const graffitiMenuDelete = graffitiMenu.querySelector(
+    const graffitiMenuDelete = this.menu.querySelector(
       '.graffiti__menu__delete'
     )
     graffitiMenuDelete.onclick = () => {
-      element.remove()
-      graffitiMenu.style.display = 'none'
-      this.graffiti.listener[TEXT_FIELD_DELETE] &&
-        this.graffiti.listener[TEXT_FIELD_DELETE](element)
+      this.graffiti.event.emit(TEXT_FIELD_DELETE, this)
       this.destory()
+      this.menu.remove()
     }
   }
 
@@ -253,7 +292,6 @@ export default class TextField {
    * 销毁
    */
   destory() {
-    this.graffiti = null
-    this.document = null
+    this.document.remove()
   }
 }

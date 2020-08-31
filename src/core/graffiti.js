@@ -1,45 +1,66 @@
 import TextField from './component/text-field'
+import Events from './utils/event'
 
 /**
  * Graffiti
  * @param {*} id 容器id
  */
 class Graffiti {
-  constructor(id) {
-    this.id = id
+  constructor() {
     // 容器
     this.container = null
+
+    // 容器高度
+    this.containerHeight = 0
+
+    // 容器高度/真实图片高度
+    this.heightScale = 0
+
+    // 容器宽度
+    this.containerWidth = 0
+
+    // 容器宽度/真实图片宽度
+    this.widthScale = 0
+
     // 内部元素管理
     this.elementUiList = []
+
     // 监听器
     this.listener = {}
+
+    this.event = new Events()
   }
 
   /**
    * 初始化
+   * @param {*} id id
+   * @param {*} height 容器高度
+   * @param {*} width 容器宽度
    */
-  init() {
-    let dom = document.getElementById(this.id)
+  init(id, width = 0, height = 0) {
+    let dom = null
+    if (typeof id === 'string') {
+      dom = document.getElementById(id)
+    } else {
+      dom = id
+    }
+    this.containerHeight = height
+    this.containerWidth = width
+    if (height) {
+      dom.style.height = `${height}px`
+    }
+    if (width) {
+      dom.style.width = `${width}px`
+    }
     if (dom) {
       dom.className = 'graffiti'
-      let ul = document.createElement('ul')
-      ul.id = 'graffiti__menu'
-      ul.className = 'graffiti__menu'
-      let li = document.createElement('li')
-      let a = document.createElement('a')
-      a.className = 'graffiti__menu__delete'
-      a.href = '###'
-      a.innerText = '删除'
-      li.appendChild(a)
-      ul.appendChild(li)
-      document.body.appendChild(ul)
       this.container = dom
     }
   }
 
   /**
    * 添加背景图
-   * @param {*} imgUrl
+   * @param {*} imgUrl 网络图片（本地图片暂不支持，在vue项目中经过打包会导致路径错误）
    */
   addBgImg(imgUrl) {
     const that = this
@@ -47,12 +68,24 @@ class Graffiti {
       console.error('添加背景图，图片地址不能为空')
       return
     }
+    if (!imgUrl.includes('http')) {
+      console.error('图片地址必须是网络地址')
+      return
+    }
     let img = new Image()
     img.src = imgUrl
     img.onload = function () {
-      that.container.style.width = this.naturalWidth + 'px'
-      that.container.style.height = this.naturalHeight + 'px'
+      // 容器宽高
+      const { containerHeight, containerWidth } = that
+      // 容器宽度 与 真实图片宽度 缩放比例
+      const widthScale = containerWidth / this.naturalWidth
+      that.widthScale = widthScale
+      // 容器高度 与 真实图片高度 缩放比例
+      const heightScale = containerHeight / this.naturalHeight
+      that.heightScale = heightScale
+      // 设置图片背景
       that.container.style.backgroundImage = 'url(' + imgUrl + ')'
+      that.container.style.backgroundSize = 'contain'
     }
   }
 
@@ -71,8 +104,12 @@ class Graffiti {
       letterSpacing = 0, // 字体距离(em)
       data = {},
     } = config
+    const that = this
+
     // 初始化li组件
-    let liComponet = new TextField(this, 'li', {
+    let id = that.elementUiList.length + 1
+    let componet = new TextField(that, 'li', {
+      id,
       text,
       x,
       y,
@@ -84,13 +121,12 @@ class Graffiti {
         letterSpacing: `${letterSpacing}em`,
       },
       data: Object.assign(data, {
-        id: this.elementUiList.length + 1,
+        id,
       }),
     })
     // 渲染
-    liComponet.render()
-
-    this.elementUiList.push(liComponet)
+    componet.render()
+    that.elementUiList.push({ id, componet })
   }
 
   /**
@@ -98,7 +134,7 @@ class Graffiti {
    * @param {*} name 事件
    */
   on(name, fn) {
-    this.listener[name] = fn
+    this.event.on(name, fn)
   }
 }
 

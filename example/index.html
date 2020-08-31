@@ -6,60 +6,79 @@
     <title>Graffiti Demo</title>
   </head>
   <style>
+    h1 {
+      text-align: center;
+    }
+    .demo {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-around;
+    }
     .content {
       text-align: center;
+      width: 375px;
+      height: 590px;
     }
     .tool {
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
     }
     button {
       height: 40px;
       width: 100px;
-      background-color: aqua;
-      border-color: aqua;
+      background-color: #449b9b;
+      border-color: #449b9b;
       outline: none;
       cursor: pointer;
       border-radius: 10px;
+      color: #fff;
     }
   </style>
   <body>
-    <div class="content">
-      <h1>graffiti.js demo</h1>
-      <div id="content"></div>
-    </div>
-    <div class="tool">
-      <button onclick="onClickFontSizeBigger()">字体 +2 px</button>
-      <button onclick="onClickFontSizeSmaller()">字体 -2 px</button>
-      <button onclick="onClickLineHightBigger()">行高 +0.1</button>
-      <button onclick="onClickLineHightSmaller()">行高 -0.1</button>
-      <button onclick="onClickWidthBigger()">宽度 +2px</button>
-      <button onclick="onClickWidthSmaller()">宽度 -2px</button>
+    <h1>graffiti.js demo</h1>
+    <div class="demo">
+      <div class="content">
+        <div id="content"></div>
+      </div>
+      <div class="tool">
+        <button onclick="onClickAddTextField()">添加输入框</button>
+        <button onclick="onClickFontSizeBigger()">字体 +2 px</button>
+        <button onclick="onClickFontSizeSmaller()">字体 -2 px</button>
+        <button onclick="onClickLineHightBigger()">行高 +0.1</button>
+        <button onclick="onClickLineHightSmaller()">行高 -0.1</button>
+        <button onclick="onClickWidthBigger()">宽度 +2px</button>
+        <button onclick="onClickWidthSmaller()">宽度 -2px</button>
+      </div>
     </div>
     <link rel="stylesheet" href="../dist/graffiti.css" />
     <script src="../dist/graffiti.min.js"></script>
     <script>
       let textFieldDom = null
+      let textFieldComponent = null
+      let graf = null
       window.onload = function () {
         console.log('document 初始化')
-        const g = new graffiti('content')
-        g.init()
-        g.addBgImg('./bg.jpeg')
-
-        setTimeout(() => {
-          g.addTextField()
-        }, 1000)
-
+        graf = new graffiti('content')
+        graf.init(375, 590)
+        graf.addBgImg('./bg.jpeg')
         // 监听事件
-        g.on('textFieldFocus', (e) => {
+        graf.on('textFieldFocus', (e) => {
           textFieldDom = e
         })
-
-        // 监听事件
-        g.on('containerClick', (e) => {
+        graf.on('containerClick', (e) => {
           textFieldDom = null
         })
+        graf.on('textFieldDelete', (e) => {
+          console.log(e)
+          e.destory()
+        })
       }
-
+      // 添加输入框
+      function onClickAddTextField() {
+        graf.addTextField()
+      }
       // 字体变大
       function onClickFontSizeBigger() {
         let fontSize = textFieldDom.componentElement.style.fontSize

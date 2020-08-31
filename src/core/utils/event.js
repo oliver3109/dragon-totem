@@ -69,9 +69,8 @@ export default class Events {
    * 发布、执行器
    *
    * @param {*} eventName 事件名称
-   * @param {*} content 回调
    */
-  emit(eventName, content) {
+  emit(eventName) {
     let _event,
       ctx,
       args = Array.prototype.slice.call(arguments, 1)
