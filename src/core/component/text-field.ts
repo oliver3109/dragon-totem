@@ -110,11 +110,9 @@ export default class TextField {
     let { x = 0, y = 0, classList = [], style = {}, data = {} } =
       config || this.config
     this.document.setAttribute('class', classList.join(' '))
-    let styleStr = this.document.getAttribute('style') || ''
     for (const key in style) {
-      styleStr += `${hump2Underline(key)}:${style[key]}${key2unit(key)};`
+      this.document.style.setProperty(hump2Underline(key), `${style[key]}${key2unit(key)}`)
     }
-    this.document.setAttribute('style', styleStr)
     for (const key in data) {
       this.document.dataset[key] = data[key]
     }
@@ -349,11 +347,9 @@ export default class TextField {
    * @param {*} style
    */
   public setStyle(style: Style) {
-    let styleStr = this.document.getAttribute('style') || ''
     for (const key in style) {
-      styleStr += `${hump2Underline(key)}:${style[key]}${key2unit(key)};`
+      this.document.style.setProperty(hump2Underline(key), `${style[key]}${key2unit(key)}`)
     }
-    this.document.setAttribute('style', styleStr)
     this.config.style = style
   }
 
