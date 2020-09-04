@@ -1,5 +1,3 @@
-import './dragon-totem.scss'
-
 import { DragonTotem } from './core/dragon-totem'
 
 import * as Event from './core/constant/event'

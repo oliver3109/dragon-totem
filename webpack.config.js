@@ -3,9 +3,9 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const path = require('path')
 
 var config = {
-  mode: 'development',
+  mode: 'production',
   entry: {
-    'dragon-totem': './src/index.ts',
+    'dragon-totem': ['./src/index.ts', './src/dragon-totem.scss'],
   },
   resolve: {
     extensions: ['.js', '.ts', '.tsx', '.scss'],

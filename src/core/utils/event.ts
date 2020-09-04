@@ -61,7 +61,7 @@ export default class Events {
    *
    * @param {*} eventName 事件名称
    */
-  public emit(eventName: string, args?: any) {
+  public emit(eventName: string, ...args: any) {
     let ctx,
       _event = this.event_list
     if (_event) {
@@ -74,10 +74,11 @@ export default class Events {
     if (!ctx) {
       return false
     } else if (isFunction(ctx)) {
-      ctx.apply(this, args)
+      console.log(ctx)
+      ctx.apply(this, Array.prototype.slice.call(arguments, 1))
     } else if (isArray(ctx)) {
       for (let i = 0; i < ctx.length; i++) {
-        ctx[i].apply(this, args)
+        ctx[i].apply(this, Array.prototype.slice.call(arguments, 1))
       }
     }
     return true

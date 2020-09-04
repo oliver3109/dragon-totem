@@ -67,6 +67,7 @@
         graf.addBgImg(img)
         // 监听事件
         graf.on('textFieldFocus', (e) => {
+          console.log(e)
           textFieldDom = e
         })
         graf.on('containerClick', (e) => {
@@ -74,7 +75,7 @@
         })
         graf.on('textFieldDelete', (e) => {
           console.log(e)
-          e.destory()
+          // e.destory()
         })
       }
       // 添加输入框
@@ -83,7 +84,7 @@
       }
       // 字体变大
       function onClickFontSizeBigger() {
-        let fontSize = textFieldDom.componentElement.style.fontSize
+        let fontSize = textFieldDom.realElement.style.fontSize
         let f = Number(fontSize.replace('px', '')) + 2
         textFieldDom.setStyle({
           fontSize: f + 'px',
@@ -91,7 +92,7 @@
       }
       // 字体变小
       function onClickFontSizeSmaller() {
-        let fontSize = textFieldDom.componentElement.style.fontSize
+        let fontSize = textFieldDom.realElement.style.fontSize
         let f = Number(fontSize.replace('px', '')) - 2
         textFieldDom.setStyle({
           fontSize: f + 'px',
@@ -99,7 +100,7 @@
       }
       // 行高变大
       function onClickLineHightBigger() {
-        let lineHeight = textFieldDom.componentElement.style.lineHeight
+        let lineHeight = textFieldDom.realElement.style.lineHeight
         let f = Number(lineHeight) + 0.1
         console.log(lineHeight)
         textFieldDom.setStyle({
@@ -108,7 +109,7 @@
       }
       // 行高变小
       function onClickLineHightSmaller() {
-        let lineHeight = textFieldDom.componentElement.style.lineHeight
+        let lineHeight = textFieldDom.realElement.style.lineHeight
         let f = Number(lineHeight) - 0.1
         console.log(f)
         textFieldDom.setStyle({
@@ -117,7 +118,7 @@
       }
       // 宽度变大
       function onClickWidthBigger() {
-        let width = textFieldDom.componentElement.style.width
+        let width = textFieldDom.realElement.style.width
         let f = Number(width.replace('px', '')) + 2
         textFieldDom.setStyle({
           width: f + 'px',
@@ -125,7 +126,7 @@
       }
       // 宽度变小
       function onClickWidthSmaller() {
-        let width = textFieldDom.componentElement.style.width
+        let width = textFieldDom.realElement.style.width
         let f = Number(width.replace('px', '')) - 2
         textFieldDom.setStyle({
           width: f + 'px',
