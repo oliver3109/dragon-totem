@@ -1,19 +1,10 @@
-/*
- * @Description: 事件管理
- * @Auth: Oliver <81092048@qq.com>
- * @Copyright: 2019 智慧校友前端团队
- * @Date: 2020-08-22 15:29:10
- * @FilePath: /graffiti.js/src/core/utils/event.js
- */
 import { isArray, isFunction, isObject } from './util'
 
 export default class Events {
-  // 初始化
-  constructor() {
-    this.event_list = {}
-    this.MaxEventListNum = this.MaxEventListNum || undefined
-    this.defaultMaxEventListNum = 10
-  }
+
+  event_list: any = {}
+  MaxEventListNum: number | undefined;
+  defaultMaxEventListNum = 10;
 
   /**
    * 订阅、监听器
@@ -21,8 +12,8 @@ export default class Events {
    * @param {*} eventName 事件名称
    * @param {*} content 回调
    */
-  on(eventName, content) {
-    let _event, ctx
+  on(eventName: string, content: Function) {
+    let _event, ctx: any
     if (!isFunction(content)) {
       throw new Error(
         'Events.prototype.on || [eventName, content] -> Error: "content" must be a function'
@@ -70,11 +61,9 @@ export default class Events {
    *
    * @param {*} eventName 事件名称
    */
-  emit(eventName) {
-    let _event,
-      ctx,
-      args = Array.prototype.slice.call(arguments, 1)
-    _event = this.event_list
+  emit(eventName: string, args?: any) {
+    let ctx,
+      _event = this.event_list
     if (_event) {
       ctx = this.event_list[eventName]
     } else {
@@ -100,7 +89,7 @@ export default class Events {
    * @param {*} event 事件名称
    * @param {*} content 回调
    */
-  once(event, content) {
+  once(event: string, content: Function) {
     if (!isFunction(content)) {
       throw new Error(
         'Events.prototype.once || [eventName, content] -> Error: "content" must be a function'
@@ -116,7 +105,7 @@ export default class Events {
    * @param {*} content 函数（回调函数）
    * @returns 当前实例
    */
-  removeListener(type, content) {
+  removeListener(type: string, content: Function) {
     let _event,
       ctx,
       index = 0
@@ -153,7 +142,7 @@ export default class Events {
     return this
   }
 
-  removeAllListener(type) {
+  removeAllListener(type: string) {
     let _event, ctx
     _event = this.event_list
     if (!_event) {
@@ -180,11 +169,11 @@ export default class Events {
    * @param {*} type 事件名/可忽略
    * @returns type ？ 数量 ；所有事件的数量，{}
    */
-  getListenerCount(type) {
+  getListenerCount(type: string) {
     let _event,
       ctx,
       ev_name = type,
-      Count_obj = {}
+      Count_obj: any = {}
     _event = this.event_list
     if (!_event || Object.keys(_event).length === 0) {
       return undefined
@@ -211,7 +200,7 @@ export default class Events {
    * @param {*} content
    * @returns
    */
-  dealOnce(target, type, content) {
+  dealOnce(target: this, type: string, content: Function) {
     let fired = false
     let that = this
     function packageFun() {
@@ -220,7 +209,7 @@ export default class Events {
         fired = true
         content.apply(target, arguments)
       }
-      packageFun.content = content
+      content = content
     }
     return packageFun
   }

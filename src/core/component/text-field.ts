@@ -2,28 +2,50 @@
  * @Description: 文本输入框组件
  * @Auth: Oliver <81092048@qq.com>
  * @Date: 2020-08-21 22:50:22
- * @FilePath: /graffiti.js/src/core/component/text-field.js
+ * @FilePath: /dragon-totem/src/core/component/text-field.ts
  */
 
 import {
   TEXT_FIELD_FOUCS,
-  CONTAINER_CLICK,
   TEXT_FIELD_DELETE,
 } from '../constant/event'
+import DragonTotem from '../dragon-totem'
+import { TextFieldConfig, Style } from '../interfaces/index';
+
+interface Coordinate {
+  l: number;
+  r: number;
+  t: number;
+  b: number;
+  n: number;
+}
 
 export default class TextField {
+  // DragonTotem 对象
+  dragonTotem: DragonTotem;
+  // 外层容器DOM对象
+  container: HTMLElement;
+  // HTML tag 标签
+  tag: keyof HTMLElementTagNameMap = 'li';
+  // 当前组件DOM对象
+  document: HTMLElement;
+  // 配置项
+  config: TextFieldConfig;
+  // 菜单
+  menu: HTMLElement;
+
   /**
    * 组件构造函数
-   * @param {*} graffiti 主对象
+   * @param {*} dragon-totem 主对象
    * @param {*} tag html标签
    * @param {*} config 元素配置
    */
-  constructor(graffiti, tag, config) {
-    // Graffiti 对象
-    this.graffiti = graffiti
+  constructor(dragonTotem: DragonTotem, tag: keyof HTMLElementTagNameMap, config: TextFieldConfig) {
+    // DragonTotem 对象
+    this.dragonTotem = dragonTotem
 
     // 外层容器DOM对象
-    const container = graffiti.container
+    const container = dragonTotem.container
     this.container = container
 
     // 当前组件DOM对象
@@ -52,20 +74,23 @@ export default class TextField {
   /**
    * 初始化组件
    */
-  init(config) {
+  init(config: TextFieldConfig) {
     // 配置样式
     let { x = 0, y = 0, classList = [], style = {}, data = {} } =
       config || this.config
-    this.document.classList = classList
+    this.document.setAttribute('class', classList.join(' '))
+    let styleStr = this.document.getAttribute('style') || ''
     for (const key in style) {
-      this.document.style[key] = style[key]
+      styleStr += `${key}:${style[key]};`
     }
+    this.document.setAttribute('style', styleStr)
     for (const key in data) {
       this.document.dataset[key] = data[key]
     }
     this.document.style.left = `${x}px`
     this.document.style.top = `${y}px`
     this.document.id = 'TEXT-FIELD-' + config.id
+
   }
 
   /**
@@ -74,11 +99,11 @@ export default class TextField {
   initMenu() {
     // 添加菜单
     let ul = document.createElement('ul')
-    ul.id = 'graffiti__menu'
-    ul.className = 'graffiti__menu'
+    ul.id = 'dragon-totem__menu'
+    ul.className = 'dragon-totem__menu'
     let li = document.createElement('li')
     let a = document.createElement('a')
-    a.className = 'graffiti__menu__delete'
+    a.className = 'dragon-totem__menu__delete'
     a.href = '###'
     a.innerText = '删除'
     li.appendChild(a)
@@ -97,8 +122,10 @@ export default class TextField {
     element.className = 'element'
     let span = document.createElement('span')
     span.innerText = this.config.text || '双击编辑文本'
+
     element.onclick = (e) => {
       this.menu.style.display = 'none'
+
       const lis = this.container.querySelectorAll(
         'li.item.item-comp.item-comp-border'
       )
@@ -107,18 +134,23 @@ export default class TextField {
       })
       li.classList.remove('item-comp-hover')
       li.classList.add('item-comp-border')
-      this.graffiti.event.emit(TEXT_FIELD_FOUCS, this)
+      this.dragonTotem.event.emit(TEXT_FIELD_FOUCS, this)
+
+
       e.stopImmediatePropagation()
     }
+
     element.ondblclick = (e) => {
       this.stop()
       span.contentEditable = 'true'
       setTimeout(() => {
         let selection = window.getSelection()
-        let range = document.createRange()
-        range.selectNodeContents(span)
-        selection.removeAllRanges()
-        selection.addRange(range)
+        if (selection) {
+          let range = document.createRange()
+          range.selectNodeContents(span)
+          selection.removeAllRanges()
+          selection.addRange(range)
+        }
       }, 0)
       e.stopImmediatePropagation()
     }
@@ -131,22 +163,20 @@ export default class TextField {
         item.classList.add('item-comp-hover')
         item.classList.remove('item-comp-border')
       })
-      this.graffiti.event.emit(TEXT_FIELD_FOUCS)
+      this.dragonTotem.event.emit(TEXT_FIELD_FOUCS)
+      span.onblur = (e) => {
+        this.render()
+        li.classList.add('item-comp-hover')
+        li.classList.remove('item-comp-border')
+        e.preventDefault()
+      }
+      element.appendChild(span)
+      let elementBox = document.createElement('div')
+      elementBox.className = 'element-box'
+      elementBox.appendChild(element)
+      // 添加内部对象
+      li.appendChild(elementBox)
     }
-    span.onblur = (e) => {
-      this.render()
-      li.classList.add('item-comp-hover')
-      li.classList.remove('item-comp-border')
-      e.preventDefault()
-    }
-
-    element.appendChild(span)
-
-    let elementBox = document.createElement('div')
-    elementBox.className = 'element-box'
-    elementBox.appendChild(element)
-    // 添加内部对象
-    li.appendChild(elementBox)
   }
 
   /**
@@ -184,13 +214,15 @@ export default class TextField {
     }
 
     // 获取删除
-    const graffitiMenuDelete = this.menu.querySelector(
-      '.graffiti__menu__delete'
+    const dragonTotemMenuDelete = this.menu.querySelector(
+      '.dragon-totem__menu__delete'
     )
-    graffitiMenuDelete.onclick = () => {
-      this.graffiti.event.emit(TEXT_FIELD_DELETE, this)
-      this.destory()
-      this.menu.remove()
+    if (dragonTotemMenuDelete) {
+      (dragonTotemMenuDelete as HTMLElement).onclick = () => {
+        this.dragonTotem.event.emit(TEXT_FIELD_DELETE, this)
+        this.destory()
+        this.menu.remove()
+      }
     }
   }
 
@@ -213,7 +245,7 @@ export default class TextField {
    * @param obj 被拖动的div
    * @param sent 设置div在容器中可以被拖动的区域
    */
-  onMoveOutBoundary(obj, sent = {}) {
+  onMoveOutBoundary(obj: HTMLElement, sent: Coordinate) {
     let dmW = document.documentElement.clientWidth || document.body.clientWidth
     let dmH =
       document.documentElement.clientHeight || document.body.clientHeight
@@ -282,10 +314,12 @@ export default class TextField {
    * 设置样式
    * @param {*} style
    */
-  setStyle(style) {
+  setStyle(style: Style) {
+    let styleStr = this.document.getAttribute('style') || ''
     for (const key in style) {
-      this.document.style[key] = style[key]
+      styleStr += `${key}:${style[key]};`
     }
+    this.document.setAttribute('style', styleStr)
   }
 
   /**

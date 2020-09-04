@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Graffiti Demo</title>
+    <title>DragonTotem Demo</title>
   </head>
   <style>
     h1 {
@@ -37,7 +37,7 @@
     }
   </style>
   <body>
-    <h1>graffiti.js demo</h1>
+    <h1>dragon-totem.js demo</h1>
     <div class="demo">
       <div class="content">
         <div id="content"></div>
@@ -53,14 +53,14 @@
       </div>
     </div>
     <link rel="stylesheet" href="../dist/graffiti.css" />
-    <script src="../dist/graffiti.min.js"></script>
+    <script src="../dist/dragon-totem.min.js"></script>
     <script>
       let textFieldDom = null
       let textFieldComponent = null
       let graf = null
       window.onload = function () {
         console.log('document 初始化')
-        graf = new graffiti('content')
+        graf = new dragon() - totem('content')
         graf.init(375, 590)
         graf.addBgImg('./bg.jpeg')
         // 监听事件

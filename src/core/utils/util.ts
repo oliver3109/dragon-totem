@@ -4,7 +4,7 @@
  * @param {*} fn 需要检测的函数
  * @returns boolean
  */
-export function isFunction(fn) {
+export function isFunction(fn: any) {
   return fn instanceof Function
 }
 /**
@@ -13,7 +13,7 @@ export function isFunction(fn) {
  * @param {*} obj 检测对象
  * @returns boolean
  */
-export function isObject(obj) {
+export function isObject(obj: any) {
   return obj instanceof Object
 }
 /**
@@ -22,7 +22,7 @@ export function isObject(obj) {
  * @param {*} arr 检测数组
  * @returns boolean
  */
-export function isArray(arr) {
+export function isArray(arr: any) {
   return arr instanceof Array
 }
 
