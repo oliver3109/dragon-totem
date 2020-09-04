@@ -74,7 +74,6 @@ export default class Events {
     if (!ctx) {
       return false
     } else if (isFunction(ctx)) {
-      console.log(ctx)
       ctx.apply(this, Array.prototype.slice.call(arguments, 1))
     } else if (isArray(ctx)) {
       for (let i = 0; i < ctx.length; i++) {

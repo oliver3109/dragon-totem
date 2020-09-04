@@ -5,7 +5,8 @@ const path = require('path')
 var config = {
   mode: 'production',
   entry: {
-    'dragon-totem': ['./src/index.ts', './src/dragon-totem.scss'],
+    // @warning ts放在前面会导致打包出问题
+    'dragon-totem': ['./src/dragon-totem.scss', './src/index.ts'],
   },
   resolve: {
     extensions: ['.js', '.ts', '.tsx', '.scss'],

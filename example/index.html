@@ -59,6 +59,7 @@
       let textFieldComponent = null
       let graf = null
       window.onload = function () {
+        console.log(DragonTotem)
         console.log('document 初始化')
         graf = new DragonTotem('content', 375, 590)
         const img = new Image()
@@ -84,10 +85,9 @@
       }
       // 字体变大
       function onClickFontSizeBigger() {
-        let fontSize = textFieldDom.realElement.style.fontSize
-        let f = Number(fontSize.replace('px', '')) + 2
+        let fontSize = textFieldDom.config.style.fontSize
         textFieldDom.setStyle({
-          fontSize: f + 'px',
+          fontSize: fontSize + 2,
         })
       }
       // 字体变小

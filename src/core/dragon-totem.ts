@@ -82,8 +82,8 @@ export class DragonTotem {
       x, // 坐标x
       y, // 坐标y
       style: {
-        width = 100, // 文本输入框宽度(px)
-        lineHeight = 1, // 字体行高
+        width = 94, // 文本输入框宽度(px)
+        lineHeight = 20, // 字体行高
         fontSize = 14, // 字体大小(px)
         letterSpacing = 0, // 字体距离(em)
       } = {},
@@ -100,10 +100,10 @@ export class DragonTotem {
       y,
       classList: ['item item-comp item-comp-hover'],
       style: {
-        'width': `${width}px`,
-        'line-Height': `${lineHeight}`,
-        'font-size': `${fontSize}px`,
-        'letter-spacing': `${letterSpacing}em`,
+        width,
+        lineHeight,
+        fontSize,
+        letterSpacing,
       },
       data: Object.assign(data, {
         id,

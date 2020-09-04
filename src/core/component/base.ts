@@ -100,10 +100,3 @@ class Test extends Component {
     super()
   }
 }
-
-let t = new Test()
-t.on('created', function (params?: any) {
-  console.log(params)
-})
-
-console.log(t)

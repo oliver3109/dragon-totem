@@ -22,6 +22,25 @@ interface Coordinate {
   n: number;
 }
 
+const NeedAddPx = [
+  'width',
+  'lineHeight',
+  'fontSize',
+]
+
+const NeedAddEm = [
+  'letterSpacing'
+]
+
+function key2unit(key: string) {
+  if (NeedAddEm.includes(key)) {
+    return 'em'
+  }
+  if (NeedAddPx.includes(key)) {
+    return 'px'
+  }
+}
+
 export default class TextField {
   // DragonTotem 对象
   dragonTotem: DragonTotem;
@@ -93,7 +112,7 @@ export default class TextField {
     this.document.setAttribute('class', classList.join(' '))
     let styleStr = this.document.getAttribute('style') || ''
     for (const key in style) {
-      styleStr += `${hump2Underline(key)}:${style[key]};`
+      styleStr += `${hump2Underline(key)}:${style[key]}${key2unit(key)};`
     }
     this.document.setAttribute('style', styleStr)
     for (const key in data) {
@@ -144,9 +163,6 @@ export default class TextField {
       })
       li.classList.remove('item-comp-hover')
       li.classList.add('item-comp-border')
-      console.log('click ...')
-      console.log(this)
-      console.log(this.component)
       this.dragonTotem.event.emit(TEXT_FIELD_FOUCS, this.component)
       e.stopImmediatePropagation()
     }
@@ -335,7 +351,7 @@ export default class TextField {
   public setStyle(style: Style) {
     let styleStr = this.document.getAttribute('style') || ''
     for (const key in style) {
-      styleStr += `${hump2Underline(key)}:${style[key]};`
+      styleStr += `${hump2Underline(key)}:${style[key]}${key2unit(key)};`
     }
     this.document.setAttribute('style', styleStr)
     this.config.style = style
