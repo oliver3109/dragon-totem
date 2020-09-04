@@ -46,7 +46,7 @@ export class DragonTotem {
    * 添加背景图
    * @param {*} img 网络图片（本地图片暂不支持，在vue项目中经过打包会导致路径错误）
    */
-  addBgImg(img: HTMLImageElement) {
+  public addBgImg(img: HTMLImageElement) {
     const that = this
     if (!img) {
       console.error('添加背景图，图片地址不能为空')
@@ -76,15 +76,17 @@ export class DragonTotem {
    * 添加文本输入框
    * @param {*} config
    */
-  addTextField(config: TextFieldConfig) {
+  public addTextField(config: TextFieldConfig = {}) {
     const {
       text = '双击输入文字', // 文字
       x, // 坐标x
       y, // 坐标y
-      width = 100, // 文本输入框宽度(px)
-      lineHeight = 1, // 字体行高
-      fontSize = 26, // 字体大小(px)
-      letterSpacing = 0, // 字体距离(em)
+      style: {
+        width = 100, // 文本输入框宽度(px)
+        lineHeight = 1, // 字体行高
+        fontSize = 14, // 字体大小(px)
+        letterSpacing = 0, // 字体距离(em)
+      } = {},
       data = {},
     } = config
     const that = this
@@ -116,9 +118,7 @@ export class DragonTotem {
    * 监听
    * @param {*} name 事件
    */
-  on(name: string, fn: Function) {
+  public on(name: string, fn: Function) {
     this.event.on(name, fn)
   }
 }
-
-export default DragonTotem

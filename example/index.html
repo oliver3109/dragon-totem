@@ -52,17 +52,19 @@
         <button onclick="onClickWidthSmaller()">宽度 -2px</button>
       </div>
     </div>
-    <link rel="stylesheet" href="../dist/graffiti.css" />
-    <script src="../dist/dragon-totem.min.js"></script>
+    <link rel="stylesheet" href="../dist/umd/dragon-totem.css" />
+    <script src="../dist/umd/dragon-totem.bundle.js"></script>
     <script>
       let textFieldDom = null
       let textFieldComponent = null
       let graf = null
       window.onload = function () {
         console.log('document 初始化')
-        graf = new dragon() - totem('content')
-        graf.init(375, 590)
-        graf.addBgImg('./bg.jpeg')
+        graf = new DragonTotem('content', 375, 590)
+        const img = new Image()
+        img.src =
+          'http://uplus.huwei1024.com:50080/upload/wxb/static/2020/09/04/c0df84b7e8194ce29f2e8ab792519a06.jpeg'
+        graf.addBgImg(img)
         // 监听事件
         graf.on('textFieldFocus', (e) => {
           textFieldDom = e

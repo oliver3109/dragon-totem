@@ -1,12 +1,15 @@
 {
+  "compileOnSave": true,
   "compilerOptions": {
+    "incremental": true,
     "target": "es5",
     "module": "commonjs",
     "declaration": true,
-    "outDir": "./dist",
+    "outDir": "./dist/node",
     "strict": true,
     "lib": ["es2017", "es7", "es6", "dom"],
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "allowJs": true
   },
   "include": ["src"],
   "exclude": ["node_modules", "**/__tests__/*"]

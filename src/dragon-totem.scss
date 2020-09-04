@@ -16,7 +16,7 @@ body * {
   display: inline-block;
   // 菜单
   &__menu {
-    z-index: 999;
+    z-index: 99999;
     position: absolute;
     display: none;
     width: 100px;

@@ -8,9 +8,11 @@
 import {
   TEXT_FIELD_FOUCS,
   TEXT_FIELD_DELETE,
+  CONTAINER_CLICK,
 } from '../constant/event'
-import DragonTotem from '../dragon-totem'
+import { DragonTotem } from '../dragon-totem'
 import { TextFieldConfig, Style } from '../interfaces/index';
+import { hump2Underline } from '../utils/util';
 
 interface Coordinate {
   l: number;
@@ -54,10 +56,11 @@ export default class TextField {
     // 相关配置项
     this.config = config
 
+    // 初始化
+    this.init(config)
+
     // 当前组件的菜单对象
     this.menu = this.initMenu()
-
-    this.init(config)
 
     // 构建
     this.buildComponent()
@@ -66,9 +69,18 @@ export default class TextField {
     this.initContextMenuEvent()
   }
 
-  // 获取组件真实dom对象
-  get componentElement() {
+  // 获取组件DOM对象
+  get realElement() {
     return this.document
+  }
+
+  // 获取组件DOM样式
+  get documentStyle() {
+    return this.config.style
+  }
+
+  get component() {
+    return this
   }
 
   /**
@@ -81,7 +93,7 @@ export default class TextField {
     this.document.setAttribute('class', classList.join(' '))
     let styleStr = this.document.getAttribute('style') || ''
     for (const key in style) {
-      styleStr += `${key}:${style[key]};`
+      styleStr += `${hump2Underline(key)}:${style[key]};`
     }
     this.document.setAttribute('style', styleStr)
     for (const key in data) {
@@ -122,10 +134,8 @@ export default class TextField {
     element.className = 'element'
     let span = document.createElement('span')
     span.innerText = this.config.text || '双击编辑文本'
-
     element.onclick = (e) => {
       this.menu.style.display = 'none'
-
       const lis = this.container.querySelectorAll(
         'li.item.item-comp.item-comp-border'
       )
@@ -134,9 +144,10 @@ export default class TextField {
       })
       li.classList.remove('item-comp-hover')
       li.classList.add('item-comp-border')
-      this.dragonTotem.event.emit(TEXT_FIELD_FOUCS, this)
-
-
+      console.log('click ...')
+      console.log(this)
+      console.log(this.component)
+      this.dragonTotem.event.emit(TEXT_FIELD_FOUCS, this.component)
       e.stopImmediatePropagation()
     }
 
@@ -163,20 +174,27 @@ export default class TextField {
         item.classList.add('item-comp-hover')
         item.classList.remove('item-comp-border')
       })
-      this.dragonTotem.event.emit(TEXT_FIELD_FOUCS)
-      span.onblur = (e) => {
-        this.render()
-        li.classList.add('item-comp-hover')
-        li.classList.remove('item-comp-border')
-        e.preventDefault()
-      }
-      element.appendChild(span)
-      let elementBox = document.createElement('div')
-      elementBox.className = 'element-box'
-      elementBox.appendChild(element)
-      // 添加内部对象
-      li.appendChild(elementBox)
+      this.dragonTotem.event.emit(CONTAINER_CLICK)
     }
+    span.onblur = (e) => {
+      this.render()
+      li.classList.add('item-comp-hover')
+      li.classList.remove('item-comp-border')
+      if (
+        !span.innerText ||
+        span.innerText == '' ||
+        span.innerText.length === 0
+      ) {
+        span.innerText = '双击编辑文本'
+      }
+      e.preventDefault()
+    }
+    element.appendChild(span)
+    let elementBox = document.createElement('div')
+    elementBox.className = 'element-box'
+    elementBox.appendChild(element)
+    // 添加内部对象
+    li.appendChild(elementBox)
   }
 
   /**
@@ -305,7 +323,7 @@ export default class TextField {
   /**
    * 停止移动
    */
-  stop() {
+  public stop() {
     document.onmouseup = null
     this.document.onmousedown = null
   }
@@ -314,18 +332,19 @@ export default class TextField {
    * 设置样式
    * @param {*} style
    */
-  setStyle(style: Style) {
+  public setStyle(style: Style) {
     let styleStr = this.document.getAttribute('style') || ''
     for (const key in style) {
-      styleStr += `${key}:${style[key]};`
+      styleStr += `${hump2Underline(key)}:${style[key]};`
     }
     this.document.setAttribute('style', styleStr)
+    this.config.style = style
   }
 
   /**
    * 销毁
    */
-  destory() {
+  public destory() {
     this.document.remove()
   }
 }

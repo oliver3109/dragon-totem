@@ -27,6 +27,24 @@ export function isArray(arr: any) {
 }
 
 /**
+ * 中划线转换驼峰
+ * @param name 
+ */
+export function underLine2Hump(name: string) {
+  return name.replace(/\-(\w)/g, function (all, letter) {
+    return letter.toUpperCase();
+  });
+}
+
+/**
+ * 驼峰转换中划线
+ * @param name 
+ */
+export function hump2Underline(name: string) {
+  return name.replace(/([A-Z])/g, "-$1").toLowerCase();
+}
+
+/**
  * 生成uuid
  */
 export function uuid() {

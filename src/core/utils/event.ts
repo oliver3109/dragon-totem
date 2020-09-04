@@ -12,7 +12,7 @@ export default class Events {
    * @param {*} eventName 事件名称
    * @param {*} content 回调
    */
-  on(eventName: string, content: Function) {
+  public on(eventName: string, content: Function) {
     let _event, ctx: any
     if (!isFunction(content)) {
       throw new Error(
@@ -61,7 +61,7 @@ export default class Events {
    *
    * @param {*} eventName 事件名称
    */
-  emit(eventName: string, args?: any) {
+  public emit(eventName: string, args?: any) {
     let ctx,
       _event = this.event_list
     if (_event) {
@@ -89,7 +89,7 @@ export default class Events {
    * @param {*} event 事件名称
    * @param {*} content 回调
    */
-  once(event: string, content: Function) {
+  public once(event: string, content: Function) {
     if (!isFunction(content)) {
       throw new Error(
         'Events.prototype.once || [eventName, content] -> Error: "content" must be a function'
@@ -105,7 +105,7 @@ export default class Events {
    * @param {*} content 函数（回调函数）
    * @returns 当前实例
    */
-  removeListener(type: string, content: Function) {
+  public removeListener(type: string, content: Function) {
     let _event,
       ctx,
       index = 0
@@ -142,7 +142,7 @@ export default class Events {
     return this
   }
 
-  removeAllListener(type: string) {
+  public removeAllListener(type: string) {
     let _event, ctx
     _event = this.event_list
     if (!_event) {
