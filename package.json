@@ -1,6 +1,6 @@
 {
   "name": "dragon-totem",
-  "version": "0.0.19",
+  "version": "0.0.24",
   "description": "H5图形编排工具",
   "main": "dist/node/index.js",
   "types": "dist/node/index.d.ts",

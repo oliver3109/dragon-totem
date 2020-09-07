@@ -50,6 +50,7 @@
         <button onclick="onClickLineHightSmaller()">行高 -0.1</button>
         <button onclick="onClickWidthBigger()">宽度 +2px</button>
         <button onclick="onClickWidthSmaller()">宽度 -2px</button>
+        <button onclick="onClickDestroy()">销毁</button>
       </div>
     </div>
     <link rel="stylesheet" href="../dist/umd/dragon-totem.css" />
@@ -131,6 +132,10 @@
         textFieldDom.setStyle({
           width: f + 'px',
         })
+      }
+
+      function onClickDestroy() {
+        graf.destory()
       }
     </script>
   </body>

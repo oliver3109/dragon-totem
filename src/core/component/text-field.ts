@@ -68,7 +68,7 @@ export default class TextField {
 
     // 外层容器DOM对象
     const container = dragonTotem.container
-    this.container = container
+    this.container = container as any
 
     // 当前组件DOM对象
     this.document = document.createElement(tag)
@@ -129,7 +129,7 @@ export default class TextField {
   initMenu() {
     // 添加菜单
     let ul = document.createElement('ul')
-    ul.id = 'dragon-totem__menu'
+    ul.id = 'dragon-totem__menu_' + this.config.id
     ul.className = 'dragon-totem__menu'
     let li = document.createElement('li')
     let a = document.createElement('a')
@@ -164,6 +164,12 @@ export default class TextField {
       li.classList.add('item-comp-border')
       this.dragonTotem.event.emit(TEXT_FIELD_FOUCS, this.component)
       e.stopImmediatePropagation()
+    }
+
+    span.oninput = (v) => {
+      // 监听输入改变 config里面的数据
+      const text = (v.target as any).innerText
+      this.config.text = text
     }
 
     element.ondblclick = (e) => {
@@ -279,6 +285,7 @@ export default class TextField {
    * @param sent 设置div在容器中可以被拖动的区域
    */
   onMoveOutBoundary(obj: HTMLElement, sent: Coordinate) {
+    const that = this
     let dmW = document.documentElement.clientWidth || document.body.clientWidth
     let dmH =
       document.documentElement.clientHeight || document.body.clientHeight
@@ -315,6 +322,8 @@ export default class TextField {
 
         obj.style.left = slideLeft + 'px'
         obj.style.top = slideTop + 'px'
+        that.config.x = slideLeft * that.dragonTotem.widthScale
+        that.config.y = slideTop * that.dragonTotem.heightScale
       }
       document.onmouseup = function () {
         document.onmousemove = null
@@ -360,6 +369,13 @@ export default class TextField {
    * 销毁
    */
   public destory() {
-    this.document.remove()
+    this.document.remove();
+    this.menu.remove();
+    setTimeout(() => {
+      (this.document as any) = null;
+      (this.menu as any) = null
+    }, 0);
+    (this.tag as any) = null;
+    (this.config as any) = null;
   }
 }

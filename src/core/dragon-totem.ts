@@ -8,7 +8,7 @@ import { TextFieldConfig } from './interfaces/index';
  */
 export class DragonTotem {
   // 容器
-  container: HTMLElement;
+  container: HTMLElement | null;
   // 容器高度
   containerHeight = 0;
   // 容器高度/真实图片高度
@@ -18,11 +18,11 @@ export class DragonTotem {
   // 容器宽度/真实图片宽度
   widthScale = 0;
   // 内部元素管理
-  elementUiList: Array<{ id: number, componet: any }> = [];
+  elementUiList: Array<{ id: number, component: TextField }> = [];
   // 监听器
   listener = {}
   // 事件对象
-  event = new Events()
+  event: Events = new Events()
 
   constructor(id: string | HTMLElement, width = 0, height = 0) {
     let dom = null
@@ -94,7 +94,7 @@ export class DragonTotem {
 
     // 初始化li组件
     let id = that.elementUiList.length + 1
-    let componet = new TextField(that, 'li', {
+    let component = new TextField(that, 'li', {
       id,
       text,
       x,
@@ -112,8 +112,8 @@ export class DragonTotem {
       }),
     })
     // 渲染
-    componet.render()
-    that.elementUiList.push({ id, componet })
+    component.render()
+    that.elementUiList.push({ id, component })
   }
 
   /**
@@ -121,6 +121,27 @@ export class DragonTotem {
    * @param {*} name 事件
    */
   public on(name: string, fn: Function) {
-    this.event.on(name, fn)
+    if (this.event) {
+      this.event.on(name, fn)
+    }
+  }
+
+  /**
+   * 销毁
+   */
+  public destory() {
+    this.elementUiList.forEach(item => {
+      item.component.destory()
+    })
+    this.container?.setAttribute('class', '')
+    this.containerHeight = 0;
+    this.containerWidth = 0;
+    (this.event as any) = null
+    this.widthScale = 0;
+    this.listener = {}
+    setTimeout(() => {
+      this.container = null;
+      this.elementUiList = [];
+    }, 0);
   }
 }
