@@ -7,7 +7,8 @@
 import Event from '../utils/event'
 import { uuid } from '../utils/util'
 
-export default class Component {
+
+export default abstract class Component {
   // TODO: 1. Component properties 组件的属性
   //          1) 唯一标识别（内部使用）
   //          2) 位置信息（相对于父容器）
@@ -26,7 +27,7 @@ export default class Component {
   /**
    * 初始化
    */
-  init() {
+  private init() {
     let s = setTimeout(() => {
       this.hookEvent('created')
       clearTimeout(s)
@@ -58,7 +59,7 @@ export default class Component {
    * @param {*} eventName
    * @param {*} fn
    */
-  on(eventName: string, fn: Function) {
+  protected on(eventName: string, fn: Function) {
     this.event.on(eventName, fn)
   }
 
@@ -67,10 +68,10 @@ export default class Component {
   //          2) 更新位置
   //          3) 渲染
   //          4) 更新状态
-  setStyle() { }
-  updateLocation() { }
-  render() { }
-  updateStatus() { }
+  protected setStyle() { }
+  protected updateLocation() { }
+  protected render() { }
+  protected updateStatus() { }
   // TODO: 2. Component life cycle 组件的声明周期
   //          1) 创建
   //          2) 渲染
@@ -93,10 +94,4 @@ export default class Component {
   onRightClick() { }
   onFocus() { }
   onBlur() { }
-}
-
-class Test extends Component {
-  constructor() {
-    super()
-  }
 }

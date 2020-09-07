@@ -39,6 +39,7 @@ function key2unit(key: string) {
   if (NeedAddPx.includes(key)) {
     return 'px'
   }
+  return '';
 }
 
 export default class TextField {
@@ -348,9 +349,11 @@ export default class TextField {
    */
   public setStyle(style: Style) {
     for (const key in style) {
+      if (this.config.style) {
+        this.config.style[key] = style[key]
+      }
       this.document.style.setProperty(hump2Underline(key), `${style[key]}${key2unit(key)}`)
     }
-    this.config.style = style
   }
 
   /**

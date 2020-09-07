@@ -37,7 +37,7 @@ body * {
         &:hover,
         &:active {
           background: #eee;
-          color: #0aaf88;
+          color: #38d4b0;
         }
       }
       &:first-of-type {
@@ -48,7 +48,6 @@ body * {
   // 每个自定义元素
   & > .item {
     z-index: 99;
-    color: #676767;
     line-height: 1;
     background: none;
     position: absolute;
@@ -73,17 +72,15 @@ body * {
       writing-mode: horizontal-tb;
       text-align: left;
       background-color: rgba(255, 255, 255, 0);
-      font-weight: bold;
       z-index: 8;
-      color: rgb(103, 103, 103);
       transform: none;
       border-width: 0px;
       border-style: solid;
-      border-color: rgb(0, 0, 0);
+      border-color: #000000;
       border-radius: 0px;
       padding-bottom: 0px;
       padding-top: 0px;
-      box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 0px;
+      box-shadow: #00000080 0px 0px 0px;
       text-decoration: none;
       letter-spacing: 0px;
       margin-top: 0px;

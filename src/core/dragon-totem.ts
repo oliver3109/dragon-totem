@@ -82,6 +82,7 @@ export class DragonTotem {
       x, // 坐标x
       y, // 坐标y
       style: {
+        color = '#676767', // 文本颜色
         width = 94, // 文本输入框宽度(px)
         lineHeight = 20, // 字体行高
         fontSize = 14, // 字体大小(px)
@@ -100,6 +101,7 @@ export class DragonTotem {
       y,
       classList: ['item item-comp item-comp-hover'],
       style: {
+        color,
         width,
         lineHeight,
         fontSize,
