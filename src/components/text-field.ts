@@ -1,18 +1,31 @@
-/*
- * @Description: 文本输入框组件
- * @Auth: Oliver <81092048@qq.com>
- * @Date: 2020-08-21 22:50:22
- * @FilePath: /dragon-totem/src/core/component/text-field.ts
- */
-
 import {
   TEXT_FIELD_FOUCS,
   TEXT_FIELD_DELETE,
   CONTAINER_CLICK,
-} from '../constant/event'
+} from '../shared-utils/event'
 import { DragonTotem } from '../dragon-totem'
-import { TextFieldConfig, Style } from '../interfaces/index';
-import { hump2Underline } from '../utils/util';
+import { hump2Underline, getStylePropUnit } from '../shared-utils/util';
+
+export interface Style {
+  width?: number | string; // 文本输入框宽度(px)
+  lineHeight?: number | string; // 字体行高
+  fontSize?: number | string; // 字体大小(px)
+  letterSpacing?: number | string; // 字体距离(em)
+  color?: string; // 颜色
+  fontWeight?: string | number; // 字体粗细
+  textAlign?: 'left' | 'center' | 'right' // 对齐方式
+  [index: string]: any
+}
+
+export interface TextFieldConfig {
+  id?: number; // 唯一标记
+  text?: string; // 文字
+  x?: number; // 坐标x
+  y?: number; // 坐标y
+  style?: Style; // 样式
+  classList?: Array<string>; // 样式列表
+  data?: any; // 携带数据
+}
 
 interface Coordinate {
   l: number;
@@ -20,26 +33,6 @@ interface Coordinate {
   t: number;
   b: number;
   n: number;
-}
-
-const NeedAddPx = [
-  'width',
-  'lineHeight',
-  'fontSize',
-]
-
-const NeedAddEm = [
-  'letterSpacing'
-]
-
-function key2unit(key: string) {
-  if (NeedAddEm.includes(key)) {
-    return 'em'
-  }
-  if (NeedAddPx.includes(key)) {
-    return 'px'
-  }
-  return '';
 }
 
 export default class TextField {
@@ -90,29 +83,29 @@ export default class TextField {
   }
 
   // 获取组件DOM对象
-  get realElement() {
+  get realElement(): HTMLElement {
     return this.document
   }
 
   // 获取组件DOM样式
-  get documentStyle() {
+  get documentStyle(): Style | undefined {
     return this.config.style
   }
 
-  get component() {
+  get component(): this {
     return this
   }
 
   /**
    * 初始化组件
    */
-  init(config: TextFieldConfig) {
+  init(config: TextFieldConfig): void {
     // 配置样式
-    let { x = 0, y = 0, classList = [], style = {}, data = {} } =
+    const { x = 0, y = 0, classList = [], style = {}, data = {} } =
       config || this.config
     this.document.setAttribute('class', classList.join(' '))
     for (const key in style) {
-      this.document.style.setProperty(hump2Underline(key), `${style[key]}${key2unit(key)}`)
+      this.document.style.setProperty(hump2Underline(key), `${style[key]}${getStylePropUnit(key)}`)
     }
     for (const key in data) {
       this.document.dataset[key] = data[key]
@@ -120,19 +113,18 @@ export default class TextField {
     this.document.style.left = `${x}px`
     this.document.style.top = `${y}px`
     this.document.id = 'TEXT-FIELD-' + config.id
-
   }
 
   /**
    * 初始化菜单
    */
-  initMenu() {
+  initMenu(): HTMLElement {
     // 添加菜单
-    let ul = document.createElement('ul')
+    const ul = document.createElement('ul')
     ul.id = 'dragon-totem__menu_' + this.config.id
     ul.className = 'dragon-totem__menu'
-    let li = document.createElement('li')
-    let a = document.createElement('a')
+    const li = document.createElement('li')
+    const a = document.createElement('a')
     a.className = 'dragon-totem__menu__delete'
     a.href = '###'
     a.innerText = '删除'
@@ -145,12 +137,12 @@ export default class TextField {
   /**
    * 构造组件
    */
-  buildComponent() {
-    let li = this.document
+  buildComponent(): void {
+    const li = this.document
     li.style.userSelect = 'none'
-    let element = document.createElement('div')
+    const element = document.createElement('div')
     element.className = 'element'
-    let span = document.createElement('span')
+    const span = document.createElement('span')
     span.innerText = this.config.text || '双击编辑文本'
     element.onclick = (e) => {
       this.menu.style.display = 'none'
@@ -166,9 +158,9 @@ export default class TextField {
       e.stopImmediatePropagation()
     }
 
-    span.oninput = (v) => {
+    span.oninput = () => {
       // 监听输入改变 config里面的数据
-      const text = (v.target as any).innerText
+      const text = span.innerText
       this.config.text = text
     }
 
@@ -176,9 +168,9 @@ export default class TextField {
       this.stop()
       span.contentEditable = 'true'
       setTimeout(() => {
-        let selection = window.getSelection()
+        const selection = window.getSelection()
         if (selection) {
-          let range = document.createRange()
+          const range = document.createRange()
           range.selectNodeContents(span)
           selection.removeAllRanges()
           selection.addRange(range)
@@ -211,7 +203,7 @@ export default class TextField {
       e.preventDefault()
     }
     element.appendChild(span)
-    let elementBox = document.createElement('div')
+    const elementBox = document.createElement('div')
     elementBox.className = 'element-box'
     elementBox.appendChild(element)
     // 添加内部对象
@@ -221,7 +213,7 @@ export default class TextField {
   /**
    * 初始化自定义菜单显示事件
    */
-  initContextMenuEvent() {
+  initContextMenuEvent(): void {
     // 自定义右键菜单
     this.document.oncontextmenu = (event) => {
       // 获取当前点击的坐标数据
@@ -268,8 +260,8 @@ export default class TextField {
   /**
    * div 拖动事件
    */
-  onMove() {
-    let sent = {
+  onMove(): void {
+    const sent = {
       l: 0, //设置div在父元素的活动范围，10相当于给父div设置padding-left：10;
       r: this.container.offsetWidth - this.document.offsetWidth, // offsetWidth:当前对象的宽度， offsetWidth = width+padding+border
       t: 0,
@@ -284,26 +276,24 @@ export default class TextField {
    * @param obj 被拖动的div
    * @param sent 设置div在容器中可以被拖动的区域
    */
-  onMoveOutBoundary(obj: HTMLElement, sent: Coordinate) {
-    const that = this
-    let dmW = document.documentElement.clientWidth || document.body.clientWidth
-    let dmH =
+  onMoveOutBoundary(obj: HTMLElement, sent: Coordinate): void {
+    const dmW = document.documentElement.clientWidth || document.body.clientWidth
+    const dmH =
       document.documentElement.clientHeight || document.body.clientHeight
 
-    let l = sent.l || 0
-    let r = sent.r || dmW - obj.offsetWidth
-    let t = sent.t || 0
-    let b = sent.b || dmH - obj.offsetHeight
-    let n = sent.n || 10
+    const l = sent.l || 0
+    const r = sent.r || dmW - obj.offsetWidth
+    const t = sent.t || 0
+    const b = sent.b || dmH - obj.offsetHeight
+    // const n = sent.n || 10
 
-    obj.onmousedown = function (ev) {
-      let oEvent = ev || event
-      let sentX = oEvent.clientX - obj.offsetLeft
-      let sentY = oEvent.clientY - obj.offsetTop
+    obj.onmousedown = (ev) => {
+      const oEvent = ev
+      const sentX = oEvent.clientX - obj.offsetLeft
+      const sentY = oEvent.clientY - obj.offsetTop
 
-      document.onmousemove = function (ev) {
-        let oEvent = ev || event
-
+      document.onmousemove = (ev) => {
+        const oEvent = ev
         let slideLeft = oEvent.clientX - sentX
         let slideTop = oEvent.clientY - sentY
 
@@ -322,8 +312,8 @@ export default class TextField {
 
         obj.style.left = slideLeft + 'px'
         obj.style.top = slideTop + 'px'
-        that.config.x = slideLeft * that.dragonTotem.widthScale
-        that.config.y = slideTop * that.dragonTotem.heightScale
+        this.config.x = slideLeft * this.dragonTotem.widthScale
+        this.config.y = slideTop * this.dragonTotem.heightScale
       }
       document.onmouseup = function () {
         document.onmousemove = null
@@ -337,7 +327,7 @@ export default class TextField {
   /**
    * 渲染组件在容器中显示
    */
-  render() {
+  render(): void {
     if (this.container && this.document) {
       this.container.appendChild(this.document)
       this.onMove()
@@ -347,7 +337,7 @@ export default class TextField {
   /**
    * 停止移动
    */
-  public stop() {
+  public stop(): void {
     document.onmouseup = null
     this.document.onmousedown = null
   }
@@ -356,26 +346,26 @@ export default class TextField {
    * 设置样式
    * @param {*} style
    */
-  public setStyle(style: Style) {
+  public setStyle(style: Style): void {
     for (const key in style) {
       if (this.config.style) {
         this.config.style[key] = style[key]
       }
-      this.document.style.setProperty(hump2Underline(key), `${style[key]}${key2unit(key)}`)
+      this.document.style.setProperty(hump2Underline(key), `${style[key]}${getStylePropUnit(key)}`)
     }
   }
 
   /**
    * 销毁
    */
-  public destory() {
+  public destory(): void {
     this.document.remove();
     this.menu.remove();
     setTimeout(() => {
-      (this.document as any) = null;
-      (this.menu as any) = null
+      this.document = null;
+      this.menu = null
     }, 0);
-    (this.tag as any) = null;
-    (this.config as any) = null;
+    this.tag = null;
+    this.config = null;
   }
 }

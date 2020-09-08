@@ -1,15 +1,25 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
+    /* 基础配置 */
     "incremental": true,
-    "target": "es5",
-    "module": "commonjs",
+    "allowJs": true,
+    "target": "ESNext",
+    "lib": ["DOM", "esnext", "DOM.Iterable"],
+    "removeComments": true,
     "declaration": true,
-    "outDir": "./dist/node",
-    "strict": true,
-    "lib": ["es2017", "es7", "es6", "dom"],
+    "sourceMap": true,
+    "preserveConstEnums": false,
+    "downlevelIteration": true,
+    "strictNullChecks": false,
+    /* 强类型检查配置 */
+    "noImplicitAny": false,
+    /* 模块分析配置 */
+    "baseUrl": ".",
+    "outDir": "./lib",
     "esModuleInterop": true,
-    "allowJs": true
+    "moduleResolution": "node",
+    "resolveJsonModule": true
   },
   "include": ["src"],
   "exclude": ["node_modules", "**/__tests__/*"]

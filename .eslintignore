@@ -1,0 +1,11 @@
+# Ignore node_modules
+node_modules
+lib
+
+# Ignore not support files
+!.*.js
+.eslintrc.js
+*.d.ts
+
+# Ignore some examples files
+examples/**/*.js

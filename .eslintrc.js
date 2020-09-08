@@ -1,13 +1,28 @@
-module.exports = {
-  parser: '@typescript-eslint/parser',
+// .eslintrc.js
+const eslintrc = {
+  parser: '@typescript-eslint/parser', // 使用 ts 解析器
   extends: [
-    'plugin:@typescript-eslint/recommended',
-    'prettier/@typescript-eslint',
-    'plugin:prettier/recommended',
+    'eslint:recommended', // eslint 推荐规则
+    'plugin:@typescript-eslint/recommended', // ts 推荐规则
   ],
   plugins: ['@typescript-eslint'],
   env: {
     browser: true,
     node: true,
+    es6: true,
   },
+  parserOptions: {
+    project: './tsconfig.eslint.json',
+    ecmaVersion: 2019,
+    sourceType: 'module',
+    ecmaFeatures: {
+      experimentalObjectRestSpread: true,
+    },
+  },
+  rules: {
+    '@typescript-eslint/no-explicit-any': 0,
+    '@typescript-eslint/explicit-module-boundary-types': 0,
+  }, // 自定义
 }
+
+module.exports = eslintrc

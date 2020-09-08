@@ -1,4 +1,16 @@
-import { isArray, isFunction, isObject } from './util'
+import { isArray, isFunction } from './util'
+
+// 文本输入获取焦点事件
+export const TEXT_FIELD_FOUCS = 'textFieldFocus'
+
+// 元素移动事件
+export const MOVE = 'move'
+
+// 容器点击事件
+export const CONTAINER_CLICK = 'containerClick'
+
+// 元素菜单点击删除事件
+export const TEXT_FIELD_DELETE = 'textFieldDelete'
 
 export default class Events {
 
@@ -12,7 +24,7 @@ export default class Events {
    * @param {*} eventName 事件名称
    * @param {*} content 回调
    */
-  public on(eventName: string, content: Function) {
+  public on(eventName: string, content: () => void) {
     let _event, ctx: any
     if (!isFunction(content)) {
       throw new Error(
@@ -38,7 +50,7 @@ export default class Events {
 
     if (!ctx.maxed) {
       if (isArray(ctx)) {
-        let len = ctx.length
+        const len = ctx.length
         if (
           len >
           (this.MaxEventListNum
@@ -61,9 +73,9 @@ export default class Events {
    *
    * @param {*} eventName 事件名称
    */
-  public emit(eventName: string, ...args: any) {
-    let ctx,
-      _event = this.event_list
+  public emit(eventName: string, ...args): boolean {
+    let ctx;
+    const _event = this.event_list
     if (_event) {
       ctx = this.event_list[eventName]
     } else {
@@ -74,10 +86,10 @@ export default class Events {
     if (!ctx) {
       return false
     } else if (isFunction(ctx)) {
-      ctx.apply(this, Array.prototype.slice.call(arguments, 1))
+      ctx.apply(this, Array.prototype.slice.call(args, 1))
     } else if (isArray(ctx)) {
       for (let i = 0; i < ctx.length; i++) {
-        ctx[i].apply(this, Array.prototype.slice.call(arguments, 1))
+        ctx[i].apply(this, Array.prototype.slice.call(args, 1))
       }
     }
     return true
@@ -89,7 +101,7 @@ export default class Events {
    * @param {*} event 事件名称
    * @param {*} content 回调
    */
-  public once(event: string, content: Function) {
+  public once(event: string, content: () => void): this {
     if (!isFunction(content)) {
       throw new Error(
         'Events.prototype.once || [eventName, content] -> Error: "content" must be a function'
@@ -105,16 +117,15 @@ export default class Events {
    * @param {*} content 函数（回调函数）
    * @returns 当前实例
    */
-  public removeListener(type: string, content: Function) {
-    let _event,
-      ctx,
-      index = 0
+  public removeListener(type: string, content: () => void): this {
+    const _event = this.event_list;
+    let ctx;
+    let index = 0
     if (!isFunction(content)) {
       throw new Error(
         'Events.prototype.removeListener || [eventName, content] -> Error: "content" must be a function'
       )
     }
-    _event = this.event_list
     if (!_event) {
       return this
     } else {
@@ -142,15 +153,14 @@ export default class Events {
     return this
   }
 
-  public removeAllListener(type: string) {
-    let _event, ctx
-    _event = this.event_list
+  public removeAllListener(type: string): this {
+    const _event = this.event_list
     if (!_event) {
       return this
     }
-    ctx = this.event_list[type]
+    const ctx = this.event_list[type]
     if (arguments.length === 0 && !type) {
-      let keys = Object.keys(this.event_list)
+      const keys = Object.keys(this.event_list)
       for (let i = 0, key; i < keys.length; i++) {
         key = keys[i]
         delete this.event_list[key]
@@ -169,22 +179,20 @@ export default class Events {
    * @param {*} type 事件名/可忽略
    * @returns type ？ 数量 ；所有事件的数量，{}
    */
-  getListenerCount(type: string) {
-    let _event,
-      ctx,
-      ev_name = type,
-      Count_obj: any = {}
-    _event = this.event_list
+  getListenerCount(type: string): number {
+    const ev_name = type;
+    const Count_obj: any = {}
+    const _event = this.event_list
     if (!_event || Object.keys(_event).length === 0) {
       return undefined
     }
     if (!ev_name) {
-      for (let attr in _event) {
+      for (const attr in _event) {
         Count_obj[attr] = _event[attr].ListenerCount
       }
       return Count_obj
     }
-    ctx = this.event_list[type]
+    const ctx = this.event_list[type]
     if (ctx && ctx.ListenerCount) {
       return ctx.ListenerCount
     } else {
@@ -200,15 +208,17 @@ export default class Events {
    * @param {*} content
    * @returns
    */
-  dealOnce(target: this, type: string, content: Function) {
+  dealOnce(target: this, type: string, content: () => void): () => void {
     let fired = false
-    let that = this
-    function packageFun() {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const that = this
+    function packageFun(...args) {
       that.removeListener(type, packageFun)
       if (!fired) {
         fired = true
-        content.apply(target, arguments)
+        content.apply(target, args)
       }
+      // eslint-disable-next-line no-self-assign
       content = content
     }
     return packageFun

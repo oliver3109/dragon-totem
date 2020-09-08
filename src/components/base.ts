@@ -2,10 +2,10 @@
  * @Description: 组件基础类
  * @Auth: Oliver <81092048@qq.com>
  * @Date: 2020-08-22 13:48:48
- * @FilePath: /dragon-totem/src/core/component/base.ts
+ * @FilePath: /dragon-totem/src/components/base.ts
  */
-import Event from '../utils/event'
-import { uuid } from '../utils/util'
+import Event from '../shared-utils/event'
+import { getUuid } from '../shared-utils/util'
 
 
 export default abstract class Component {
@@ -16,7 +16,7 @@ export default abstract class Component {
   //          4) 自定义属性（用户指定）
   //          5) 是否可以移动
   event = new Event()
-  uuid = uuid()
+  uuid = getUuid()
   location = { x: 0, y: 0 }
   element = null
   customAttr = {}
@@ -28,7 +28,7 @@ export default abstract class Component {
    * 初始化
    */
   private init() {
-    let s = setTimeout(() => {
+    const s = setTimeout(() => {
       this.hookEvent('created')
       clearTimeout(s)
     }, 0)
@@ -59,7 +59,7 @@ export default abstract class Component {
    * @param {*} eventName
    * @param {*} fn
    */
-  protected on(eventName: string, fn: Function) {
+  protected on(eventName: string, fn: () => void) {
     this.event.on(eventName, fn)
   }
 
@@ -68,10 +68,18 @@ export default abstract class Component {
   //          2) 更新位置
   //          3) 渲染
   //          4) 更新状态
-  protected setStyle() { }
-  protected updateLocation() { }
-  protected render() { }
-  protected updateStatus() { }
+  protected setStyle() {
+    //
+  }
+  protected updateLocation() {
+    //
+  }
+  protected render() {
+    //
+  }
+  protected updateStatus() {
+    //
+  }
   // TODO: 2. Component life cycle 组件的声明周期
   //          1) 创建
   //          2) 渲染
@@ -80,18 +88,34 @@ export default abstract class Component {
   onCreated(arg = this) {
     this.event.emit('created', arg)
   }
-  onRender() { }
-  onUpdate() { }
-  onDestroy() { }
+  onRender() {
+    //
+  }
+  onUpdate() {
+    //
+  }
+  onDestroy() {
+    //
+  }
   // TODO: 3. Component event 组件的事件
   //          1) 点击
   //          2) 双击
   //          3) 右击
   //          4) 获取焦点
   //          5) 失去焦点
-  onClick() { }
-  onDoubleClick() { }
-  onRightClick() { }
-  onFocus() { }
-  onBlur() { }
+  onClick() {
+    //
+  }
+  onDoubleClick() {
+    //
+  }
+  onRightClick() {
+    //
+  }
+  onFocus() {
+    //
+  }
+  onBlur() {
+    //
+  }
 }

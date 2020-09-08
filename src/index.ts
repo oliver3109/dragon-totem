@@ -1,3 +1,5 @@
-import { DragonTotem } from './core/dragon-totem'
+import { DragonTotem } from './dragon-totem'
 
-export = DragonTotem
+import './index.scss'
+
+export default DragonTotem;

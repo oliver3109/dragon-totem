@@ -1,6 +1,5 @@
-import TextField from './component/text-field'
-import Events from './utils/event'
-import { TextFieldConfig } from './interfaces/index';
+import TextField, { TextFieldConfig } from '../components/text-field'
+import Events from '../shared-utils/event'
 
 /**
  * DragonTotem
@@ -25,7 +24,7 @@ export class DragonTotem {
   event: Events = new Events()
 
   constructor(id: string | HTMLElement, width = 0, height = 0) {
-    let dom = null
+    let dom: HTMLElement | null = null
     if (typeof id === 'string') {
       dom = document.getElementById(id)
       if (!dom) {
@@ -46,8 +45,7 @@ export class DragonTotem {
    * 添加背景图
    * @param {*} img 网络图片（本地图片暂不支持，在vue项目中经过打包会导致路径错误）
    */
-  public addBgImg(img: HTMLImageElement) {
-    const that = this
+  public addBgImg(img: HTMLImageElement): void {
     if (!img) {
       console.error('添加背景图，图片地址不能为空')
       return
@@ -56,18 +54,18 @@ export class DragonTotem {
       console.error('图片地址必须是网络地址')
       return
     }
-    img.onload = function () {
-      const { containerHeight, containerWidth } = that
+    img.onload = () => {
+      const { containerHeight, containerWidth } = this
       // 计算 容器宽度 与 真实图片宽度 缩放比例
       const widthScale = containerWidth / img.naturalWidth
-      that.widthScale = widthScale
+      this.widthScale = widthScale
       // 计算 容器高度 与 真实图片高度 缩放比例
       const heightScale = containerHeight / img.naturalHeight
-      that.heightScale = heightScale
+      this.heightScale = heightScale
       // 设置图片背景
-      if (that.container) {
-        that.container.style.backgroundImage = 'url(' + img.src + ')'
-        that.container.style.backgroundSize = 'contain'
+      if (this.container) {
+        this.container.style.backgroundImage = 'url(' + img.src + ')'
+        this.container.style.backgroundSize = 'contain'
       }
     }
   }
@@ -76,7 +74,7 @@ export class DragonTotem {
    * 添加文本输入框
    * @param {*} config
    */
-  public addTextField(config: TextFieldConfig = {}) {
+  public addTextField(config: TextFieldConfig = {}): void {
     const {
       text = '双击输入文字', // 文字
       x, // 坐标x
@@ -90,11 +88,10 @@ export class DragonTotem {
       } = {},
       data = {},
     } = config
-    const that = this
 
     // 初始化li组件
-    let id = that.elementUiList.length + 1
-    let component = new TextField(that, 'li', {
+    const id = this.elementUiList.length + 1
+    const component = new TextField(this, 'li', {
       id,
       text,
       x,
@@ -113,14 +110,14 @@ export class DragonTotem {
     })
     // 渲染
     component.render()
-    that.elementUiList.push({ id, component })
+    this.elementUiList.push({ id, component })
   }
 
   /**
    * 监听
    * @param {*} name 事件
    */
-  public on(name: string, fn: Function) {
+  public on(name: string, fn: (...arg) => void): void {
     if (this.event) {
       this.event.on(name, fn)
     }
@@ -129,14 +126,14 @@ export class DragonTotem {
   /**
    * 销毁
    */
-  public destory() {
+  public destory(): void {
     this.elementUiList.forEach(item => {
       item.component.destory()
     })
     this.container?.setAttribute('class', '')
     this.containerHeight = 0;
     this.containerWidth = 0;
-    (this.event as any) = null
+    this.event = null;
     this.widthScale = 0;
     this.listener = {}
     setTimeout(() => {
