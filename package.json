@@ -1,6 +1,6 @@
 {
   "name": "dragon-totem",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "description": "H5图形编排工具",
   "main": "dist/cjs/index.js",
   "module": "dist/es/index.esm.js",
