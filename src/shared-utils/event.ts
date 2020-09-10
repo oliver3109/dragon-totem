@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable prefer-rest-params */
+
 import { isArray, isFunction } from './util'
 
 // 文本输入获取焦点事件
@@ -73,7 +76,7 @@ export default class Events {
    *
    * @param {*} eventName 事件名称
    */
-  public emit(eventName: string, ...args): boolean {
+  public emit(eventName: string, args?: any): boolean {
     let ctx;
     const _event = this.event_list
     if (_event) {
@@ -86,10 +89,10 @@ export default class Events {
     if (!ctx) {
       return false
     } else if (isFunction(ctx)) {
-      ctx.apply(this, Array.prototype.slice.call(args, 1))
+      ctx.apply(this, Array.prototype.slice.call(arguments, 1))
     } else if (isArray(ctx)) {
       for (let i = 0; i < ctx.length; i++) {
-        ctx[i].apply(this, Array.prototype.slice.call(args, 1))
+        ctx[i].apply(this, Array.prototype.slice.call(arguments, 1))
       }
     }
     return true

@@ -312,8 +312,8 @@ export default class TextField {
 
         obj.style.left = slideLeft + 'px'
         obj.style.top = slideTop + 'px'
-        this.config.x = slideLeft * this.dragonTotem.widthScale
-        this.config.y = slideTop * this.dragonTotem.heightScale
+        this.config.x = slideLeft
+        this.config.y = slideTop
       }
       document.onmouseup = function () {
         document.onmousemove = null

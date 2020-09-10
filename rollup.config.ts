@@ -4,7 +4,6 @@ import babel from 'rollup-plugin-babel'
 import resolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
 import { eslint } from 'rollup-plugin-eslint'
-import { uglify } from 'rollup-plugin-uglify'
 import scss from 'rollup-plugin-scss'
 import { DEFAULT_EXTENSIONS } from '@babel/core'
 
