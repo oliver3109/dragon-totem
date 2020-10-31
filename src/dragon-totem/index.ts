@@ -130,7 +130,11 @@ export class DragonTotem {
     this.elementUiList.forEach(item => {
       item.component.destory()
     })
-    this.container?.setAttribute('class', '')
+    if (this.container) {
+      this.container.removeAttribute('class')
+      this.container.removeAttribute('style');
+      this.container.innerHTML = '';
+    }
     this.containerHeight = 0;
     this.containerWidth = 0;
     this.event = null;
