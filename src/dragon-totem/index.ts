@@ -7,17 +7,17 @@ import Events from '../shared-utils/event'
  */
 export class DragonTotem {
   // 容器
-  container: HTMLElement | null;
+  container: HTMLElement | null
   // 容器高度
-  containerHeight = 0;
+  containerHeight = 0
   // 容器高度/真实图片高度
-  heightScale = 0;
+  heightScale = 0
   // 容器宽度
-  containerWidth = 0;
+  containerWidth = 0
   // 容器宽度/真实图片宽度
-  widthScale = 0;
+  widthScale = 0
   // 内部元素管理
-  elementUiList: Array<{ id: number, component: TextField }> = [];
+  elementUiList: Array<{ id: number; component: TextField }> = []
   // 监听器
   listener = {}
   // 事件对象
@@ -65,7 +65,7 @@ export class DragonTotem {
       // 设置图片背景
       if (this.container) {
         this.container.style.backgroundImage = 'url(' + img.src + ')'
-        this.container.style.backgroundSize = 'contain'
+        this.container.style.backgroundSize = '100% 100%'
       }
     }
   }
@@ -127,22 +127,22 @@ export class DragonTotem {
    * 销毁
    */
   public destory(): void {
-    this.elementUiList.forEach(item => {
+    this.elementUiList.forEach((item) => {
       item.component.destory()
     })
     if (this.container) {
       this.container.removeAttribute('class')
-      this.container.removeAttribute('style');
-      this.container.innerHTML = '';
+      this.container.removeAttribute('style')
+      this.container.innerHTML = ''
+      setTimeout(() => {
+        this.container = null
+        this.elementUiList = []
+      }, 0)
     }
-    this.containerHeight = 0;
-    this.containerWidth = 0;
-    this.event = null;
-    this.widthScale = 0;
+    this.containerHeight = 0
+    this.containerWidth = 0
+    this.event = null
+    this.widthScale = 0
     this.listener = {}
-    setTimeout(() => {
-      this.container = null;
-      this.elementUiList = [];
-    }, 0);
   }
 }
