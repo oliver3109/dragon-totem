@@ -4,50 +4,50 @@ import {
   CONTAINER_CLICK,
 } from '../shared-utils/event'
 import { DragonTotem } from '../dragon-totem'
-import { hump2Underline, getStylePropUnit } from '../shared-utils/util';
+import { hump2Underline, getStylePropUnit } from '../shared-utils/util'
 
 export interface Style {
-  width?: number | string; // 文本输入框宽度(px)
-  lineHeight?: number | string; // 字体行高
-  fontSize?: number | string; // 字体大小(px)
-  letterSpacing?: number | string; // 字体距离(em)
-  color?: string; // 颜色
-  fontWeight?: string | number; // 字体粗细
+  width?: number | string // 文本输入框宽度(px)
+  lineHeight?: number | string // 字体行高
+  fontSize?: number | string // 字体大小(px)
+  letterSpacing?: number | string // 字体距离(em)
+  color?: string // 颜色
+  fontWeight?: string | number // 字体粗细
   textAlign?: 'left' | 'center' | 'right' // 对齐方式
   [index: string]: any
 }
 
 export interface TextFieldConfig {
-  id?: number; // 唯一标记
-  text?: string; // 文字
-  x?: number; // 坐标x
-  y?: number; // 坐标y
-  style?: Style; // 样式
-  classList?: Array<string>; // 样式列表
-  data?: any; // 携带数据
+  id?: number // 唯一标记
+  text?: string // 文字
+  x?: number // 坐标x
+  y?: number // 坐标y
+  style?: Style // 样式
+  classList?: Array<string> // 样式列表
+  data?: any // 携带数据
 }
 
 interface Coordinate {
-  l: number;
-  r: number;
-  t: number;
-  b: number;
-  n: number;
+  l: number
+  r: number
+  t: number
+  b: number
+  n: number
 }
 
 export default class TextField {
   // DragonTotem 对象
-  dragonTotem: DragonTotem;
+  dragonTotem: DragonTotem
   // 外层容器DOM对象
-  container: HTMLElement;
+  container: HTMLElement
   // HTML tag 标签
-  tag: keyof HTMLElementTagNameMap = 'li';
+  tag: keyof HTMLElementTagNameMap = 'li'
   // 当前组件DOM对象
-  document: HTMLElement;
+  document: HTMLElement
   // 配置项
-  config: TextFieldConfig;
+  config: TextFieldConfig
   // 菜单
-  menu: HTMLElement;
+  menu: HTMLElement
 
   /**
    * 组件构造函数
@@ -55,7 +55,11 @@ export default class TextField {
    * @param {*} tag html标签
    * @param {*} config 元素配置
    */
-  constructor(dragonTotem: DragonTotem, tag: keyof HTMLElementTagNameMap, config: TextFieldConfig) {
+  constructor(
+    dragonTotem: DragonTotem,
+    tag: keyof HTMLElementTagNameMap,
+    config: TextFieldConfig,
+  ) {
     // DragonTotem 对象
     this.dragonTotem = dragonTotem
 
@@ -105,7 +109,10 @@ export default class TextField {
       config || this.config
     this.document.setAttribute('class', classList.join(' '))
     for (const key in style) {
-      this.document.style.setProperty(hump2Underline(key), `${style[key]}${getStylePropUnit(key)}`)
+      this.document.style.setProperty(
+        hump2Underline(key),
+        `${style[key]}${getStylePropUnit(key)}`,
+      )
     }
     for (const key in data) {
       this.document.dataset[key] = data[key]
@@ -145,9 +152,9 @@ export default class TextField {
     const span = document.createElement('span')
     span.innerText = this.config.text || '双击编辑文本'
     element.onclick = (e) => {
-      this.menu.style.display = 'none'
+      this.menu && (this.menu.style.display = 'none')
       const lis = this.container.querySelectorAll(
-        'li.item.item-comp.item-comp-border'
+        'li.item.item-comp.item-comp-border',
       )
       lis.forEach((item) => {
         item.classList.remove('item-comp-border')
@@ -181,7 +188,7 @@ export default class TextField {
 
     this.container.onclick = () => {
       this.render()
-      this.menu.style.display = 'none'
+      this.menu && (this.menu.style.display = 'none')
       const lis = this.container.querySelectorAll('li.item.item-comp')
       lis.forEach((item) => {
         item.classList.add('item-comp-hover')
@@ -246,7 +253,7 @@ export default class TextField {
 
     // 获取删除
     const dragonTotemMenuDelete = this.menu.querySelector(
-      '.dragon-totem__menu__delete'
+      '.dragon-totem__menu__delete',
     )
     if (dragonTotemMenuDelete) {
       (dragonTotemMenuDelete as HTMLElement).onclick = () => {
@@ -277,7 +284,8 @@ export default class TextField {
    * @param sent 设置div在容器中可以被拖动的区域
    */
   onMoveOutBoundary(obj: HTMLElement, sent: Coordinate): void {
-    const dmW = document.documentElement.clientWidth || document.body.clientWidth
+    const dmW =
+      document.documentElement.clientWidth || document.body.clientWidth
     const dmH =
       document.documentElement.clientHeight || document.body.clientHeight
 
@@ -351,7 +359,10 @@ export default class TextField {
       if (this.config.style) {
         this.config.style[key] = style[key]
       }
-      this.document.style.setProperty(hump2Underline(key), `${style[key]}${getStylePropUnit(key)}`)
+      this.document.style.setProperty(
+        hump2Underline(key),
+        `${style[key]}${getStylePropUnit(key)}`,
+      )
     }
   }
 
@@ -359,13 +370,18 @@ export default class TextField {
    * 销毁
    */
   public destory(): void {
-    this.document.remove();
-    this.menu.remove();
+    this.document.remove()
+    // 从容器中删除
+    this.dragonTotem.elementUiList.splice(
+      this.dragonTotem.elementUiList.findIndex((i) => i.id == this.config.id),
+      1,
+    )
+    this.menu.remove()
     setTimeout(() => {
-      this.document = null;
+      this.document = null
       this.menu = null
-    }, 0);
-    this.tag = null;
-    this.config = null;
+    }, 0)
+    this.tag = null
+    this.config = null
   }
 }
